@@ -1,8 +1,8 @@
 # import modules
-import BrickPi3
+import Brickpi3
 import time
 
-BP = BrickPi3()
+BP = Brickpi3()
 
 interface = BP.Interface()
 interface.initialize()
