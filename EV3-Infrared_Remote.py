@@ -7,11 +7,11 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information, see https://github.com/DexterInd/BrickPi3/blob/master/LICENSE.md
 #
-# This code is an example for running a motor to a target position set by the encoder of another motor.
+# This code is an example for reading an EV3 infrared sensor connected to PORT_1 of the BrickPi3
 # 
-# Hardware: Connect EV3 or NXT motors to the BrickPi3 motor ports B and C. Make sure that the BrickPi3 is running on a 9v power supply.
-#
-# Results:  When you run this program, motor C power will be controlled by the position of motor B. Manually rotate motor B, and motor C's power will change.
+# Hardware: Connect an EV3 infrared sensor to BrickPi3 sensor port 1.
+# 
+# Results:  When you run this program, the infrared remote status will be printed.
 
 from __future__ import print_function # use python 3 syntax but make it compatible with python 2
 from __future__ import division       #                           ''
@@ -21,24 +21,21 @@ import brickpi3 # import the BrickPi3 drivers
 
 BP = brickpi3.BrickPi3() # Create an instance of the BrickPi3 class. BP will be the BrickPi3 object.
 
+# Configure for an EV3 color sensor.
+# BP.set_sensor_type configures the BrickPi3 for a specific sensor.
+# BP.PORT_1 specifies that the sensor will be on sensor port 1.
+# BP.Sensor_TYPE.EV3_INFRARED_REMOTE specifies that the sensor will be an EV3 infrared sensor.
+BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_INFRARED_REMOTE)
+
 try:
-    try:
-        BP.offset_motor_encoder(BP.PORT_B, BP.get_motor_encoder(BP.PORT_B)) # reset encoder B
-    except IOError as error:
-        print(error)
-    
     while True:
-        # The following BP.get_motor_encoder function returns the encoder value (what we want to use to control motor C's power).
+        # BP.get_sensor retrieves a sensor value.
+        # BP.PORT_1 specifies that we are looking for the value of sensor port 1.
+        # BP.get_sensor returns the sensor value (what we want to display).
         try:
-            power = BP.get_motor_encoder(BP.PORT_B) / 10
-            if power > 100:
-                power = 100
-            elif power < -100:
-                power = -100
-        except IOError as error:
+            print(BP.get_sensor(BP.PORT_1))   # print the infrared values
+        except brickpi3.SensorError as error:
             print(error)
-            power = 0
-        BP.set_motor_power(BP.PORT_C, power)
         
         time.sleep(0.02)  # delay for 0.02 seconds (20ms) to reduce the Raspberry Pi CPU load.
 
