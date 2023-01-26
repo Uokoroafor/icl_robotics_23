@@ -1,5 +1,5 @@
 # import modules
-import Brickpi3
+import brickpi3
 import time
 
 BP = Brickpi3()
